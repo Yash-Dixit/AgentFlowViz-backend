@@ -1,0 +1,77 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: agentflowviz-postgres
+    environment:
+      POSTGRES_USER: agentflowviz
+      POSTGRES_PASSWORD: agentflowviz
+      POSTGRES_DB: agentflowviz
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentflowviz -d agentflowviz"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: agentflowviz-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+
+  backend:
+    build:
+      context: .
+    container_name: agentflowviz-backend
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://agentflowviz:agentflowviz@postgres:5432/agentflowviz
+      TEST_DATABASE_URL: postgresql+psycopg://agentflowviz:agentflowviz@postgres:5432/agentflowviz_test
+      OLLAMA_HOST: http://host.docker.internal:11434
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_ALLOWED_USER_IDS: ${TELEGRAM_ALLOWED_USER_IDS:-}
+      MINIO_ENABLED: "true"
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
+      MINIO_BUCKET: ${MINIO_BUCKET:-agentflowviz-artifacts}
+      MINIO_SECURE: "false"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build:
+      context: ../AgentFlowViz-frontend
+    container_name: agentflowviz-frontend
+    environment:
+      BACKEND_URL: http://backend:8000
+    ports:
+      - "8501:8501"
+    volumes:
+      - ../AgentFlowViz-frontend/logs:/app/logs
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  minio_data:

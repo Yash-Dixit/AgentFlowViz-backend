@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1180" viewBox="0 0 1800 1180" role="img" aria-labelledby="title desc">
+  <title id="title">AgentFlowViz Architecture</title>
+  <desc id="desc">Clean pictorial architecture diagram for AgentFlowViz showing the request path, Streamlit control plane, FastAPI backend, LangGraph runtime, Ollama models, persistence, messaging, scheduling, cache, memory, and monitoring.</desc>
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ea580c"/>
+    </marker>
+    <style>
+      .canvas { fill: #f8fafc; }
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 18; }
+      .card { fill: #ffffff; stroke: #d6dee9; stroke-width: 2; rx: 14; }
+      .entry { fill: #f1f5f9; stroke: #94a3b8; stroke-width: 2; rx: 14; }
+      .ui { fill: #eff6ff; stroke: #60a5fa; stroke-width: 2; rx: 14; }
+      .api { fill: #ecfdf5; stroke: #34d399; stroke-width: 2; rx: 14; }
+      .runtime { fill: #f5f3ff; stroke: #a78bfa; stroke-width: 2; rx: 14; }
+      .model { fill: #fef2f2; stroke: #f87171; stroke-width: 2; rx: 14; }
+      .data { fill: #fff7ed; stroke: #fb923c; stroke-width: 2; rx: 14; }
+      .title { font: 700 36px Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 16px Arial, sans-serif; fill: #475569; }
+      .section-title { font: 700 20px Arial, sans-serif; fill: #0f172a; }
+      .box-title { font: 700 16px Arial, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 13px Arial, sans-serif; fill: #334155; }
+      .small-text { font: 400 12px Arial, sans-serif; fill: #475569; }
+      .tag { font: 700 11px Arial, sans-serif; fill: #334155; letter-spacing: 0.4px; }
+      .arrow-blue { stroke: #2563eb; stroke-width: 3; fill: none; marker-end: url(#arrow-blue); }
+      .arrow-green { stroke: #059669; stroke-width: 3; fill: none; marker-end: url(#arrow-green); }
+      .arrow-orange { stroke: #ea580c; stroke-width: 3; fill: none; marker-end: url(#arrow-orange); }
+      .arrow-muted { stroke: #64748b; stroke-width: 2.2; fill: none; stroke-dasharray: 7 7; marker-end: url(#arrow-blue); }
+      .bus { stroke: #ea580c; stroke-width: 3; fill: none; }
+      .rule { stroke: #e2e8f0; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect class="canvas" x="0" y="0" width="1800" height="1180"/>
+  <text class="title" x="64" y="58">AgentFlowViz Architecture</text>
+  <text class="subtitle" x="64" y="88">Docker Compose local stack with Streamlit, FastAPI, LangGraph, host Ollama, Postgres/pgvector, MinIO, Telegram, RSS RAG, memory, cache, and monitoring.</text>
+
+  <rect class="panel" x="52" y="126" width="1696" height="990"/>
+
+  <text class="section-title" x="92" y="178">Main Request Path</text>
+  <text class="small-text" x="92" y="202">A prompt or upload enters through the UI or Telegram, runs through the saved workflow, and returns as a natural response.</text>
+
+  <rect class="entry" x="92" y="234" width="250" height="166"/>
+  <text class="box-title" x="118" y="268">Entry Channels</text>
+  <text class="box-text" x="118" y="297">Browser user</text>
+  <text class="box-text" x="118" y="318">Telegram allowed users</text>
+  <text class="box-text" x="118" y="339">Text, PDFs, and images</text>
+  <line class="rule" x1="118" y1="360" x2="316" y2="360"/>
+  <text class="small-text" x="118" y="383">Telegram shows typing status</text>
+
+  <rect class="ui" x="400" y="234" width="270" height="166"/>
+  <text class="box-title" x="426" y="268">Streamlit Workspace</text>
+  <text class="box-text" x="426" y="297">Workflow builder</text>
+  <text class="box-text" x="426" y="318">Run demo page</text>
+  <text class="box-text" x="426" y="339">Monitoring and settings</text>
+  <line class="rule" x1="426" y1="360" x2="644" y2="360"/>
+  <text class="small-text" x="426" y="383">Visual edits plus JSON import/export</text>
+
+  <rect class="api" x="728" y="234" width="286" height="166"/>
+  <text class="box-title" x="754" y="268">FastAPI Backend</text>
+  <text class="box-text" x="754" y="297">Agents, workflows, runs</text>
+  <text class="box-text" x="754" y="318">Uploads and Telegram adapter</text>
+  <text class="box-text" x="754" y="339">RSS scheduler and services</text>
+  <line class="rule" x1="754" y1="360" x2="988" y2="360"/>
+  <text class="small-text" x="754" y="383">Validates, persists, and starts runs</text>
+
+  <rect class="runtime" x="1072" y="234" width="286" height="166"/>
+  <text class="box-title" x="1098" y="268">LangGraph Runtime</text>
+  <text class="box-text" x="1098" y="297">Loads saved graph</text>
+  <text class="box-text" x="1098" y="318">Orchestrator chooses a branch</text>
+  <text class="box-text" x="1098" y="339">Async agent handoffs</text>
+  <line class="rule" x1="1098" y1="360" x2="1332" y2="360"/>
+  <text class="small-text" x="1098" y="383">Applies memory, limits, guardrails</text>
+
+  <rect class="model" x="1416" y="234" width="250" height="166"/>
+  <text class="box-title" x="1442" y="268">Ollama + Tools</text>
+  <text class="box-text" x="1442" y="297">gpt-oss:20b final answer</text>
+  <text class="box-text" x="1442" y="318">qwen3.5:9b fast agents</text>
+  <text class="box-text" x="1442" y="339">llava:7b image summaries</text>
+  <line class="rule" x1="1442" y1="360" x2="1640" y2="360"/>
+  <text class="small-text" x="1442" y="383">RSS RAG and attachment tools</text>
+
+  <path class="arrow-blue" d="M 342 300 L 400 300"/>
+  <path class="arrow-blue" d="M 670 300 L 728 300"/>
+  <path class="arrow-green" d="M 1014 300 L 1072 300"/>
+  <path class="arrow-green" d="M 1358 300 L 1416 300"/>
+  <path class="arrow-muted" d="M 342 366 L 360 366 L 360 430 L 728 430 L 728 366"/>
+  <text class="tag" x="364" y="286">BROWSER</text>
+  <text class="tag" x="470" y="424">TELEGRAM DIRECT TO API</text>
+  <text class="tag" x="682" y="286">HTTP API</text>
+  <text class="tag" x="1024" y="286">EXECUTE</text>
+  <text class="tag" x="1370" y="286">MODEL CALLS</text>
+
+  <text class="section-title" x="92" y="472">State, Files, and Observability</text>
+
+  <rect class="data" x="92" y="528" width="360" height="152"/>
+  <text class="box-title" x="118" y="562">Postgres + pgvector</text>
+  <text class="box-text" x="118" y="591">Agents, workflows, runs</text>
+  <text class="box-text" x="118" y="612">messages, logs, tool calls</text>
+  <text class="box-text" x="118" y="633">RSS vectors and cache entries</text>
+  <text class="small-text" x="118" y="656">Schema managed by Alembic</text>
+
+  <rect class="data" x="492" y="528" width="320" height="152"/>
+  <text class="box-title" x="518" y="562">MinIO Object Storage</text>
+  <text class="box-text" x="518" y="591">Uploaded PDFs</text>
+  <text class="box-text" x="518" y="612">Uploaded images</text>
+  <text class="box-text" x="518" y="633">Text files and extracted context</text>
+  <text class="small-text" x="518" y="656">Objects referenced from Postgres</text>
+
+  <rect class="data" x="852" y="528" width="360" height="152"/>
+  <text class="box-title" x="878" y="562">Memory + Semantic Cache</text>
+  <text class="box-text" x="878" y="591">Recent conversation turns</text>
+  <text class="box-text" x="878" y="612">Rolling long-term summary</text>
+  <text class="box-text" x="878" y="633">Embedding similarity cache hits</text>
+  <text class="small-text" x="878" y="656">Short, long, and large context windows</text>
+
+  <rect class="data" x="1252" y="528" width="414" height="152"/>
+  <text class="box-title" x="1278" y="562">Monitoring Outputs</text>
+  <text class="box-text" x="1278" y="591">Live inter-agent messages</text>
+  <text class="box-text" x="1278" y="612">Tokens, duration, cache savings</text>
+  <text class="box-text" x="1278" y="633">kWh estimate and Telegram filters</text>
+  <text class="small-text" x="1278" y="656">Visible from the Streamlit Monitoring page</text>
+
+  <path class="bus" d="M 272 492 L 1459 492"/>
+  <path class="arrow-orange" d="M 872 400 L 872 492"/>
+  <path class="arrow-orange" d="M 1215 400 L 1215 492"/>
+  <path class="arrow-orange" d="M 272 492 L 272 528"/>
+  <path class="arrow-orange" d="M 652 492 L 652 528"/>
+  <path class="arrow-orange" d="M 1032 492 L 1032 528"/>
+  <path class="arrow-orange" d="M 1459 492 L 1459 528"/>
+  <text class="tag" x="806" y="456">PERSIST, RETRIEVE, OBSERVE</text>
+
+  <text class="section-title" x="92" y="752">Detailed Capability Map</text>
+  <text class="small-text" x="92" y="776">Details are grouped here instead of being drawn as separate nodes, keeping the architecture readable.</text>
+
+  <rect class="card" x="92" y="810" width="360" height="190"/>
+  <text class="box-title" x="118" y="844">Workflow Authoring</text>
+  <text class="box-text" x="118" y="873">Create, edit, enable, disable, delete</text>
+  <text class="box-text" x="118" y="894">Drag/drop canvas and inspector</text>
+  <text class="box-text" x="118" y="915">Node, edge, condition, feedback edits</text>
+  <text class="box-text" x="118" y="936">Complete JSON import and export</text>
+  <text class="box-text" x="118" y="957">Example orchestrator workflows</text>
+  <text class="small-text" x="118" y="980">All definitions persist in Postgres</text>
+
+  <rect class="card" x="492" y="810" width="360" height="190"/>
+  <text class="box-title" x="518" y="844">Agent Configuration</text>
+  <text class="box-text" x="518" y="873">Name, role, prompt, model</text>
+  <text class="box-text" x="518" y="894">Tools, channels, skills, schedule</text>
+  <text class="box-text" x="518" y="915">Memory setting and interaction rules</text>
+  <text class="box-text" x="518" y="936">Guardrails and execution limits</text>
+  <text class="box-text" x="518" y="957">Token limit and context window</text>
+  <text class="small-text" x="518" y="980">Configured inside each workflow</text>
+
+  <rect class="card" x="892" y="810" width="360" height="190"/>
+  <text class="box-title" x="918" y="844">Runtime Behavior</text>
+  <text class="box-text" x="918" y="873">Chosen active workflow executes</text>
+  <text class="box-text" x="918" y="894">Orchestrator routes to specialists</text>
+  <text class="box-text" x="918" y="915">Async queue records handoffs</text>
+  <text class="box-text" x="918" y="936">RSS RAG and attachment tools run</text>
+  <text class="box-text" x="918" y="957">Final answer is channel-formatted</text>
+  <text class="small-text" x="918" y="980">Clipped output is repaired before return</text>
+
+  <rect class="card" x="1292" y="810" width="374" height="190"/>
+  <text class="box-title" x="1318" y="844">Deployment Boundary</text>
+  <text class="box-text" x="1318" y="873">Dockerized frontend and backend</text>
+  <text class="box-text" x="1318" y="894">Host Ollama serves local models</text>
+  <text class="box-text" x="1318" y="915">Telegram is allow-list protected</text>
+  <text class="box-text" x="1318" y="936">RSS scheduler runs every 5 minutes</text>
+  <text class="box-text" x="1318" y="957">Logs are written to the logs folder</text>
+  <text class="small-text" x="1318" y="980">No external LLM credentials required</text>
+
+  <rect class="panel" x="92" y="1032" width="1574" height="54"/>
+  <text class="box-title" x="118" y="1065">End-to-end path</text>
+  <text class="box-text" x="282" y="1065">Prompt or upload -> active workflow -> orchestrator branch -> local model and tools -> persisted state -> natural response in Streamlit or Telegram.</text>
+</svg>

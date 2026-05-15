@@ -1,0 +1,5 @@
+Alembic migration environment for AgentFlowViz Backend.
+
+Set DATABASE_URL in .env, then run:
+
+    python -m alembic upgrade head
